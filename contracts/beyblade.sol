@@ -4,25 +4,9 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "./Owner.sol";
 
-// https://www.tutorialspoint.com/solidity/solidity_function_modifiers.htm
-contract Owner{
-    address owner;
-    constructor() public {
-        owner = msg.sender;
-    }
 
-    modifier Owned {
-        require(owner == msg.sender, 'Error 1');
-        _;
-    }
-
-    modifier Richer(uint price){
-        if(msg.value >= price){
-            _;
-        }
-    }
-}
 
 //https://docs.openzeppelin.com/contracts/3.x/erc721 
 contract Beyblade is ERC721URIStorage, Owner{
@@ -30,13 +14,13 @@ contract Beyblade is ERC721URIStorage, Owner{
         Counters.Counter private _tokenIds;
         address contractAddress;
 
-        constructor(address marketplaceAddress) ERC721("Bayblad", "BBD"){
+        constructor(address marketplaceAddress) ERC721("Bayblade", "BBD"){
             contractAddress = marketplaceAddress;
         }
         
     
 
-        function MintNewBBD(string memory tokenUri) public returns(uint256) {
+        function MintNewBBD(string memory tokenUri) public Owned returns(uint256) {
             _tokenIds.increment();
 
             uint256 newItemId = _tokenIds.current();
